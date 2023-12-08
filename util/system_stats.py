@@ -13,6 +13,8 @@ def get_sysctl_value(key):
         logging.error(f"Error getting sysctl value for {key}: {e}")
         return None
 
+
+
 def get_cpu_frequency():
     tbfrequency = get_sysctl_value("hw.tbfrequency")
     clockrate_hz = get_sysctl_value("kern.clockrate")
@@ -25,6 +27,20 @@ def get_cpu_frequency():
             logging.error(f"Error processing clockrate value: {e}")
             return None
 
+
+def get_system_info():
+    system_info = {
+        "system": platform.system(),
+        "release": platform.release(),
+        "version": platform.version(),
+        "machine": platform.machine(),
+        "processor": platform.processor(),
+        "cpu_cores": psutil.cpu_count(logical=False),
+        "total_cores": psutil.cpu_count(logical=True),
+        "cpu_freq": get_cpu_frequency(),
+        "memory_total": psutil.virtual_memory().total
+    }
+    return system_info
 
 def log_system_info():
     # Log basic system information

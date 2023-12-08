@@ -13,6 +13,8 @@ numpy = "*"
 psutil = "*"
 memory-profiler = "*"
 fire = "*"
+onnxruntime = "*"
+torch = "*"
 
 [dev-packages]
 ipykernel = "*"

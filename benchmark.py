@@ -32,7 +32,12 @@ class Benchmark(object):
         if(proving_system == ProvingSystem.EZKL):
             from proving_systems.ezkl import EZKL
             ezkl = EZKL(model, iterations)
-            ezkl.run_all()
+            try:
+                ezkl.run_all()
+                logger.info("EZKL benchmark completed successfully.")
+            except Exception as e:
+                logger.fatal("Failed to run EZKL benchmark due to an error:\n", exc_info=e)
+                exit(1)
 
 
 if __name__ == "__main__":
