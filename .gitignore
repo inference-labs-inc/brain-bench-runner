@@ -156,3 +156,9 @@ cal_data.json
 *.vk
 *.srs
 proof.json
+abi.json
+address.txt
+data
+profiler_stats.txt
+*.d
+*.msgpack

@@ -23,13 +23,12 @@ class Benchmark(object):
         self.__doc__ = "A zk benchmarking tool designed to run on client machines and report information relevant to the performance of zkML models."
         pass
     def run(self, model=Model.MNIST, iterations=5, proving_system=ProvingSystem.EZKL):
-        # do something here
         if(model not in supported_models[proving_system]):
             logger.fatal("Unsupported model for proving system")
             logger.info("Supported models for selected proving system include {}".format(supported_models[proving_system]))
             exit(1)
 
-        if(proving_system == ProvingSystem.EZKL):
+        if(proving_system == ProvingSystem.EZKL.value):
             from proving_systems.ezkl import EZKL
             ezkl = EZKL(model, iterations)
             try:
@@ -37,6 +36,15 @@ class Benchmark(object):
                 logger.info("EZKL benchmark completed successfully.")
             except Exception as e:
                 logger.fatal("Failed to run EZKL benchmark due to an error:\n", exc_info=e)
+                exit(1)
+        if(proving_system == ProvingSystem.ZKML.value):
+            from proving_systems.zkml import ZKML
+            zkml = ZKML(model, iterations)
+            try:
+                zkml.run_all()
+                logger.info("ZKML benchmark completed successfully.")
+            except Exception as e:
+                logger.fatal("Failed to run ZKML benchmark due to an error:\n", exc_info=e)
                 exit(1)
 
 

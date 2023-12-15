@@ -7,6 +7,6 @@ class Model(Enum):
     MNIST = "MNIST"
 
 supported_models = {
-    ProvingSystem.EZKL: [Model.MNIST],
-    ProvingSystem.ZKML: [Model.MNIST]
+    ProvingSystem.EZKL.value: [Model.MNIST],
+    ProvingSystem.ZKML.value: [Model.MNIST]
 }

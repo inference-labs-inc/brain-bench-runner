@@ -15,6 +15,12 @@ memory-profiler = "*"
 fire = "*"
 onnxruntime = "*"
 torch = "*"
+msgpack = "*"
+torchvision = "*"
+tqdm = "*"
+onnx-tf = "*"
+tensorflow-probability = "*"
+tflite = "*"
 
 [dev-packages]
 ipykernel = "*"
