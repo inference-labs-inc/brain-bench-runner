@@ -27,6 +27,10 @@ def get_cpu_frequency():
             logging.error(f"Error processing clockrate value: {e}")
             return None
 
+def get_machine_name():
+    machine_info = get_system_info()
+    machine_name = machine_info["system"] + '-' + machine_info["processor"] + '-' + str(machine_info["cpu_freq"]) + 'Ghz-' + str(int(machine_info["memory_total"] / (1024 ** 3))) + 'GB'
+    return machine_name.replace('.', '')
 
 def get_system_info():
     system_info = {

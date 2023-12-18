@@ -18,8 +18,9 @@ import numpy as np
 import torch
 import torchvision
 import torchvision.transforms as transforms
+from util.inference import run_tflite_inference
 from tqdm import tqdm
-
+from util.system_stats import get_machine_name
 
 logger = logging.getLogger(__name__)
 addr = None
@@ -82,23 +83,24 @@ class ZKML:
         paths['model_path'] = os.path.join('models', model, 'network.tflite')
         paths['msgpack_model_path'] = os.path.join('models', model, 'network.msgpack')
         paths['input_path'] = os.path.join('models', model, 'input.msgpack')
-        paths['output_path'] = os.path.join('output', model, 'output.json')
+        paths['output_path'] = os.path.join('output', get_machine_name(), 'zkml.json')
         paths['test_circuit_path'] = os.path.join('zkml', 'target', 'release', 'test_circuit')
+        paths['time_circuit_path'] = os.path.join('zkml', 'target', 'release', 'time_circuit')
         return paths
 
     def run_all(self):
         print("Running ZKML benchmark on {} for {} iterations".format(self.model, self.iterations))
         aggregated_metrics = {}
-        for method_name in ['accuracy_checker']:
+        for method_name in ['accuracy_checker','predict_via_zkml']:
             method = getattr(self, method_name)
             _, metrics = method()
             print(method_name, metrics)
             aggregated_metrics[method_name] = metrics
         # Output the aggregated metrics as JSON
-        output_dir = './output/Darwin-arm-24Ghz-32GB'
+        output_dir = os.path.dirname(self.paths.get('output_path'))
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        with open(os.path.join(output_dir, 'zkml.json'), 'w') as json_file:
+        with open(self.paths.get('output_path'), 'w') as json_file:
             json.dump({"results": [aggregated_metrics]}, json_file, indent=4)
         return True
 
@@ -106,7 +108,6 @@ class ZKML:
     def predict_via_zkml(self):
         return subprocess.run([self.paths.get('test_circuit_path'), self.paths.get('msgpack_model_path'),
                                 self.paths.get('input_path'), "kzg"], stdout=subprocess.PIPE)
-
 
     def predict(self, image):
         image = (image * 1024).numpy().astype(np.int32)
@@ -118,22 +119,15 @@ class ZKML:
                 data, use_bin_type=True))
 
         result, metrics = self.predict_via_zkml()
-        pattern = re.compile(r"final out\[(\d)\] x: (-?\d+)")
-
-        scores = []
-        for line in result.stdout.decode("utf-8").split("\n")[-30:]:
-            match = pattern.match(line)
-            if match:
-                index = int(match.group(1))
-                score = int(match.group(2))
-
-                assert index == len(scores)
-                scores.append(score)
-
-        assert len(scores) == 10
-        prediction = np.argmax(scores)
+        result = list(filter(lambda x: "final out[" in x, result.stdout.decode("utf-8").split("\n")))
+        result = result[[i for i, s in enumerate(result) if "final out[0]" in s][1]:]
+        predictions = [None] * 10
+        for line in result:
+            index = int(line.split()[1].replace("out[", "").replace("]", ""))
+            value = float(line.split()[3])
+            predictions[index] = value
+        prediction = np.argmax(predictions)
         return prediction, metrics
-
 
     def accuracy_checker(self):
         transform = transforms.Compose([
@@ -142,19 +136,20 @@ class ZKML:
         test_dataset = torchvision.datasets.MNIST(
             root='./data', train=False, download=True, transform=transform)
         test_loader = torch.utils.data.DataLoader(
-            dataset=test_dataset, batch_size=1, shuffle=False)
+            dataset=test_dataset, batch_size=1, shuffle=True)
+        for i in range(self.iterations):
+            image = next(iter(test_loader))
+            total = 0
+            correct = 0
 
-        total = 0
-        correct = 0
-
-        for image, labels in tqdm(test_loader):
-
-            prediction = self.predict(image)
+            prediction, metrics = self.predict(image[0])
+            tflite_predictions = run_tflite_inference(self.paths.get('model_path'), np.squeeze(image[0].numpy(), axis=1))
+            tflite_prediction = np.argmax(tflite_predictions)
 
             total += 1
-            if prediction == labels.item():
+            if prediction == tflite_prediction:
                 correct += 1
-
         accuracy = 100 * correct / total
         print(f"Accuracy: {accuracy:.2f}%")
-        return accuracy
+        metrics['accuracy'] = accuracy
+        return accuracy, metrics

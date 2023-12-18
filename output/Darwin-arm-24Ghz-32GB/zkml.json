@@ -1,0 +1,17 @@
+{
+    "results": [
+        {
+            "accuracy_checker": {
+                "execution_time": 1.0081627368927002,
+                "memory_usage_bytes": 24997,
+                "peak_memory_usage_bytes": 89372,
+                "accuracy": 100.0
+            },
+            "predict_via_zkml": {
+                "execution_time": 1.0081961154937744,
+                "memory_usage_bytes": 24781,
+                "peak_memory_usage_bytes": 89156
+            }
+        }
+    ]
+}
