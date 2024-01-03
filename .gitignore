@@ -162,3 +162,9 @@ data
 profiler_stats.txt
 *.d
 *.msgpack
+proof
+public_vals
+vkey
+pkey
+params_kzg/**
+benchmarks.json

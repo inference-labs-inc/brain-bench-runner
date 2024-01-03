@@ -1,17 +1,26 @@
 {
     "results": [
         {
-            "accuracy_checker": {
-                "execution_time": 1.0081627368927002,
-                "memory_usage_bytes": 24997,
-                "peak_memory_usage_bytes": 89372,
-                "accuracy": 100.0
+            "accuracy_checker_execution_time": 1.0074350833892822,
+            "accuracy_checker_memory_usage_bytes": 25118,
+            "accuracy_checker_peak_memory_usage_bytes": 89483,
+            "accuracy_checker_accuracy": 100.0,
+            "predict_via_zkml_execution_time": 1.0076820850372314,
+            "predict_via_zkml_memory_usage_bytes": 24739,
+            "predict_via_zkml_peak_memory_usage_bytes": 89104,
+            "prove_execution_time": 19.097432851791382,
+            "prove_memory_usage_bytes": 27098,
+            "prove_peak_memory_usage_bytes": 89221,
+            "prove_file_sizes": {
+                "pkey_size_bytes": 503399812,
+                "vkey_size_bytes": 83080,
+                "proof_size_bytes": 5024,
+                "public_vals_size_bytes": 320,
+                "out_size_bytes": 31,
+                "params_kzg/17_size_bytes": 16777476
             },
-            "predict_via_zkml": {
-                "execution_time": 1.0081961154937744,
-                "memory_usage_bytes": 24781,
-                "peak_memory_usage_bytes": 89156
-            }
+            "proving_key_size": 503399812,
+            "verification_key_size": 83080
         }
     ]
 }

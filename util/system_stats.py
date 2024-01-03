@@ -6,13 +6,15 @@ import subprocess
 # Setting up logging
 logging.basicConfig(level=logging.INFO)
 
+
 def get_sysctl_value(key):
     try:
-        return subprocess.check_output(["sysctl", key], text=True).split(": ")[1].strip()
+        return (
+            subprocess.check_output(["sysctl", key], text=True).split(": ")[1].strip()
+        )
     except subprocess.CalledProcessError as e:
         logging.error(f"Error getting sysctl value for {key}: {e}")
         return None
-
 
 
 def get_cpu_frequency():
@@ -27,10 +29,21 @@ def get_cpu_frequency():
             logging.error(f"Error processing clockrate value: {e}")
             return None
 
+
 def get_machine_name():
     machine_info = get_system_info()
-    machine_name = machine_info["system"] + '-' + machine_info["processor"] + '-' + str(machine_info["cpu_freq"]) + 'Ghz-' + str(int(machine_info["memory_total"] / (1024 ** 3))) + 'GB'
-    return machine_name.replace('.', '')
+    machine_name = (
+        machine_info["system"]
+        + "-"
+        + machine_info["processor"]
+        + "-"
+        + str(machine_info["cpu_freq"])
+        + "Ghz-"
+        + str(int(machine_info["memory_total"] / (1024**3)))
+        + "GB"
+    )
+    return machine_name.replace(".", "")
+
 
 def get_system_info():
     system_info = {
@@ -42,9 +55,10 @@ def get_system_info():
         "cpu_cores": psutil.cpu_count(logical=False),
         "total_cores": psutil.cpu_count(logical=True),
         "cpu_freq": get_cpu_frequency(),
-        "memory_total": psutil.virtual_memory().total
+        "memory_total": psutil.virtual_memory().total,
     }
     return system_info
+
 
 def log_system_info():
     # Log basic system information

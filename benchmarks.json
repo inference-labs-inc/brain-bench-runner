@@ -1,98 +1,114 @@
 {
     "meta": {
-        "lastUpdated": "2023-12-18T07:35:11.574610+00:00"
+        "lastUpdated": "2024-01-03T20:04:21.632132+00:00"
     },
     "frameworks": {
         "ezkl": {
-            "Darwin-arm-24Ghz-32GB": [
-                {
-                    "gen_settings_execution_time": 1.0106940269470215,
-                    "gen_settings_memory_usage_bytes": 40807,
-                    "gen_settings_peak_memory_usage_bytes": 51699,
-                    "gen_settings_file_sizes": {
-                        "settings_size_bytes": 632
-                    },
-                    "calibrate_settings_execution_time": 4.288635969161987,
-                    "calibrate_settings_memory_usage_bytes": 33716,
-                    "calibrate_settings_peak_memory_usage_bytes": 129881,
-                    "calibrate_settings_file_sizes": {
-                        "settings_size_bytes": 600
-                    },
-                    "compile_execution_time": 1.0133261680603027,
-                    "compile_memory_usage_bytes": 19141,
-                    "compile_peak_memory_usage_bytes": 24781,
-                    "compile_file_sizes": {
-                        "network_size_bytes": 3283994
-                    },
-                    "get_srs_execution_time": 1.0030770301818848,
-                    "get_srs_memory_usage_bytes": 18873,
-                    "get_srs_peak_memory_usage_bytes": 24505,
-                    "get_srs_file_sizes": {
-                        "kzg_size_bytes": 262404
-                    },
-                    "gen_witness_execution_time": 1.006605863571167,
-                    "gen_witness_memory_usage_bytes": 120755,
-                    "gen_witness_peak_memory_usage_bytes": 122059,
-                    "gen_witness_file_sizes": {
-                        "witness_size_bytes": 22026
-                    },
-                    "mock_prove_execution_time": 1.0019421577453613,
-                    "mock_prove_memory_usage_bytes": 27206,
-                    "mock_prove_peak_memory_usage_bytes": 41816,
-                    "setup_execution_time": 1.004850149154663,
-                    "setup_memory_usage_bytes": 27213,
-                    "setup_peak_memory_usage_bytes": 51730,
-                    "setup_file_sizes": {
-                        "pk_size_bytes": 8657948,
-                        "vk_size_bytes": 6920,
-                        "settings_size_bytes": 600
-                    },
-                    "prove_execution_time": 1.0113179683685303,
-                    "prove_memory_usage_bytes": 126505,
-                    "prove_peak_memory_usage_bytes": 140251,
-                    "prove_file_sizes": {
-                        "proof_size_bytes": 61361
-                    },
-                    "verify_execution_time": 1.0112159252166748,
-                    "verify_memory_usage_bytes": 19689,
-                    "verify_peak_memory_usage_bytes": 34050,
-                    "create_evm_verifier_execution_time": 1.0059220790863037,
-                    "create_evm_verifier_memory_usage_bytes": 19626,
-                    "create_evm_verifier_peak_memory_usage_bytes": 32984,
-                    "create_evm_verifier_file_sizes": {
-                        "verifier_size_bytes": 74833,
-                        "abi_size_bytes": 266
-                    },
-                    "deploy_evm_execution_time": 1.0064971446990967,
-                    "deploy_evm_memory_usage_bytes": 22640,
-                    "deploy_evm_peak_memory_usage_bytes": 32528,
-                    "deploy_evm_file_sizes": {
-                        "address_size_bytes": 42
-                    },
-                    "verify_evm_execution_time": 1.009608268737793,
-                    "verify_evm_memory_usage_bytes": 21221,
-                    "verify_evm_peak_memory_usage_bytes": 250792,
-                    "accuracy_checker_percentage": 0.2,
-                    "average_gen_witness_time": 1.0423233270645142
-                }
-            ]
+            "python": {
+                "Darwin-arm-24Ghz-32GB": [
+                    {
+                        "gen_settings_execution_time": 1.010120153427124,
+                        "gen_settings_memory_usage_bytes": 40926,
+                        "gen_settings_peak_memory_usage_bytes": 51666,
+                        "gen_settings_file_sizes": {
+                            "settings_size_bytes": 632
+                        },
+                        "calibrate_settings_execution_time": 4.244875192642212,
+                        "calibrate_settings_memory_usage_bytes": 35767,
+                        "calibrate_settings_peak_memory_usage_bytes": 129732,
+                        "calibrate_settings_file_sizes": {
+                            "settings_size_bytes": 599
+                        },
+                        "compile_execution_time": 1.0105657577514648,
+                        "compile_memory_usage_bytes": 19083,
+                        "compile_peak_memory_usage_bytes": 24691,
+                        "compile_file_sizes": {
+                            "network_size_bytes": 3283994
+                        },
+                        "get_srs_execution_time": 1.0087380409240723,
+                        "get_srs_memory_usage_bytes": 18872,
+                        "get_srs_peak_memory_usage_bytes": 24529,
+                        "get_srs_file_sizes": {
+                            "kzg_size_bytes": 262404
+                        },
+                        "gen_witness_execution_time": 1.0109961032867432,
+                        "gen_witness_memory_usage_bytes": 108274,
+                        "gen_witness_peak_memory_usage_bytes": 109634,
+                        "gen_witness_file_sizes": {
+                            "witness_size_bytes": 15671
+                        },
+                        "mock_prove_execution_time": 1.0148978233337402,
+                        "mock_prove_memory_usage_bytes": 27150,
+                        "mock_prove_peak_memory_usage_bytes": 41848,
+                        "setup_execution_time": 1.0108811855316162,
+                        "setup_memory_usage_bytes": 27152,
+                        "setup_peak_memory_usage_bytes": 51808,
+                        "setup_file_sizes": {
+                            "pk_size_bytes": 8657948,
+                            "vk_size_bytes": 6920,
+                            "settings_size_bytes": 599
+                        },
+                        "prove_execution_time": 1.0110907554626465,
+                        "prove_memory_usage_bytes": 113742,
+                        "prove_peak_memory_usage_bytes": 127825,
+                        "prove_file_sizes": {
+                            "proof_size_bytes": 2624
+                        },
+                        "verify_execution_time": 1.0089459419250488,
+                        "verify_memory_usage_bytes": 21023,
+                        "verify_peak_memory_usage_bytes": 35410,
+                        "create_evm_verifier_execution_time": 1.0114250183105469,
+                        "create_evm_verifier_memory_usage_bytes": 19874,
+                        "create_evm_verifier_peak_memory_usage_bytes": 33200,
+                        "create_evm_verifier_file_sizes": {
+                            "verifier_size_bytes": 74833,
+                            "abi_size_bytes": 266
+                        },
+                        "deploy_evm_execution_time": 1.0075879096984863,
+                        "deploy_evm_memory_usage_bytes": 22523,
+                        "deploy_evm_peak_memory_usage_bytes": 32318,
+                        "deploy_evm_file_sizes": {
+                            "address_size_bytes": 42
+                        },
+                        "verify_evm_execution_time": 1.001810073852539,
+                        "verify_evm_memory_usage_bytes": 21076,
+                        "verify_evm_peak_memory_usage_bytes": 250481,
+                        "accuracy_checker_accuracy": 40.0,
+                        "accuracy_checker_avg_gen_witness_time": 1.0721736907958985,
+                        "proving_key_size": 8657948,
+                        "verification_key_size": 6920,
+                        "verifier_size": 74833
+                    }
+                ]
+            }
         },
         "zkml": {
-            "Darwin-arm-24Ghz-32GB": [
-                {
-                    "accuracy_checker": {
-                        "execution_time": 1.0081627368927002,
-                        "memory_usage_bytes": 24997,
-                        "peak_memory_usage_bytes": 89372,
-                        "accuracy": 100.0
-                    },
-                    "predict_via_zkml": {
-                        "execution_time": 1.0081961154937744,
-                        "memory_usage_bytes": 24781,
-                        "peak_memory_usage_bytes": 89156
+            "python": {
+                "Darwin-arm-24Ghz-32GB": [
+                    {
+                        "accuracy_checker_execution_time": 1.0074350833892822,
+                        "accuracy_checker_memory_usage_bytes": 25118,
+                        "accuracy_checker_peak_memory_usage_bytes": 89483,
+                        "accuracy_checker_accuracy": 100.0,
+                        "predict_via_zkml_execution_time": 1.0076820850372314,
+                        "predict_via_zkml_memory_usage_bytes": 24739,
+                        "predict_via_zkml_peak_memory_usage_bytes": 89104,
+                        "prove_execution_time": 19.097432851791382,
+                        "prove_memory_usage_bytes": 27098,
+                        "prove_peak_memory_usage_bytes": 89221,
+                        "prove_file_sizes": {
+                            "pkey_size_bytes": 503399812,
+                            "vkey_size_bytes": 83080,
+                            "proof_size_bytes": 5024,
+                            "public_vals_size_bytes": 320,
+                            "out_size_bytes": 31,
+                            "params_kzg/17_size_bytes": 16777476
+                        },
+                        "proving_key_size": 503399812,
+                        "verification_key_size": 83080
                     }
-                }
-            ]
+                ]
+            }
         }
     }
 }

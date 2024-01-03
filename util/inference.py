@@ -2,15 +2,17 @@ import tensorflow as tf
 import onnxruntime as ort
 import numpy as np
 
+
 def run_tflite_inference(model_path, input_data):
     interpreter = tf.lite.Interpreter(model_path)
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    interpreter.set_tensor(input_details[0]['index'], input_data)
+    interpreter.set_tensor(input_details[0]["index"], input_data)
     interpreter.invoke()
-    output_data = interpreter.get_tensor(output_details[0]['index'])
+    output_data = interpreter.get_tensor(output_details[0]["index"])
     return output_data
+
 
 def run_onnx_inference(model_path, input_data):
     sess = ort.InferenceSession(model_path)
