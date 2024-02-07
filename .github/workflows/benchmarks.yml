@@ -14,8 +14,7 @@ env:
 
 jobs:
   benchmark-tests:
-    runs-on:
-      1000gb
+    runs-on: 1000gb
     steps:
       - uses: actions/checkout@v4
       - uses: software-mansion/setup-scarb@v1
@@ -50,6 +49,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y time
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Build ZKML
+        run: cargo build --release
+        working-directory: ./src/zkml
       - name: Download and Install EZKL Binary
         run: |
           curl -L -o ezkl.tar.gz https://github.com/zkonduit/ezkl/releases/download/v7.1.4/build-artifacts.ezkl-linux-gnu.tar.gz
@@ -66,4 +68,4 @@ jobs:
       - name: Run tree ensemble regression benchmarks across all frameworks
         run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_3 --test-threads 1
       - name: Pretty Print benchmarks.json
-        run: jq '.' benchmarks.json  # Pretty print the benchmarks.json file
+        run: jq '.' benchmarks.json # Pretty print the benchmarks.json file

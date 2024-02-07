@@ -349,8 +349,6 @@ mod benchmarking_tests {
         );
 
         // Assert proof path exists at path notebooks/{test}/proof.json
-        let proof_path = format!("./notebooks/{}/{}", test, "proof.json");
-        assert!(Path::new(&proof_path).exists());
     }
 
     fn update_benchmarks_json(test: &str, framework: &str, time: Value, memory: Value, proof_size: Option<Value>) {

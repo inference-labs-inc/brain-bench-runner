@@ -1,0 +1,3 @@
+[submodule "src/zkml"]
+	path = src/zkml
+	url = https://github.com/ddkang/zkml
