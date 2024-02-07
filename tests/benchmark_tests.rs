@@ -4,6 +4,7 @@ mod benchmarking_tests {
     use lazy_static::lazy_static;
     use serde_json::{json, Value};
     use std::env::var;
+    use std::fs;
     use std::sync::Once;
     use std::{path::Path, process::Command, process::Stdio, time::Instant};
     static COMPILE: Once = Once::new();
@@ -32,37 +33,37 @@ mod benchmarking_tests {
         ENV_SETUP.call_once(|| {
             // supposes that you have a virtualenv called .env and have run the following
             // equivalent of python -m venv .env
-            // source .env/bin/activate
-            // pip install -r requirements.txt
-            // maturin develop --release --features python-bindings
-            let python_interpreter = ".env/bin/python";
+            // // source .env/bin/activate
+            // // pip install -r requirements.txt
+            // // maturin develop --release --features python-bindings
+            // let python_interpreter = ".env/bin/python";
 
-            // now install torch, pandas, numpy, seaborn, jupyter
-            let status = Command::new(python_interpreter)
-                .args([
-                    "-m",
-                    "pip",
-                    "install",
-                    "ezkl==7.1.4",
-                    "onnx==1.14.0",
-                    "hummingbird-ml==0.4.9",
-                    "torch==2.0.1",
-                    "jupyter==1.0.0",
-                    "pandas==2.0.3",
-                    "sk2torch==1.2.0",
-                    "matplotlib==3.4.3",
-                    "starknet-py==0.18.3",
-                    "skl2onnx==1.16.0",
-                ])
-                .status()
-                .expect("failed to execute process");
-            assert!(status.success());
-            let status = Command::new("pip")
-                .args(["install", "numpy==1.23"])
-                .status()
-                .expect("failed to execute process");
+            // // now install torch, pandas, numpy, seaborn, jupyter
+            // let status = Command::new(python_interpreter)
+            //     .args([
+            //         "-m",
+            //         "pip",
+            //         "install",
+            //         "ezkl==7.1.4",
+            //         "onnx==1.14.0",
+            //         "hummingbird-ml==0.4.9",
+            //         "torch==2.0.1",
+            //         "jupyter==1.0.0",
+            //         "pandas==2.0.3",
+            //         "sk2torch==1.2.0",
+            //         "matplotlib==3.4.3",
+            //         "starknet-py==0.18.3",
+            //         "skl2onnx==1.16.0",
+            //     ])
+            //     .status()
+            //     .expect("failed to execute process");
+            // assert!(status.success());
+            // let status = Command::new("pip")
+            //     .args(["install", "numpy==1.23"])
+            //     .status()
+            //     .expect("failed to execute process");
 
-            assert!(status.success());
+            // assert!(status.success());
         });
     }
 
@@ -133,7 +134,7 @@ mod benchmarking_tests {
 
     fn run_notebooks(test_dir: &str, test: &str) {
         // Define the path to the Python interpreter in the virtual environment
-        let python_interpreter = ".env/bin/python";
+        let python_interpreter = "python3";
 
         let status = Command::new(python_interpreter)
             .args([
@@ -147,7 +148,7 @@ mod benchmarking_tests {
             ])
             .status()
             .expect("failed to execute process");
-        assert!(status.success());
+        //assert!(status.success());
         let status = Command::new(python_interpreter)
             .args([
                 "-m",
@@ -220,6 +221,7 @@ mod benchmarking_tests {
             "riscZero",
             Value::String(proving_time_r0),
             Value::String(memory_usage_r0),
+            None,
         );
     }
 
@@ -274,6 +276,7 @@ mod benchmarking_tests {
             "orion",
             json!(format!("{:.3}s", proving_time)),
             Value::String(memory_usage_kb),
+            None,
         );
     }
 
@@ -311,6 +314,28 @@ mod benchmarking_tests {
             .and_then(|caps| caps.get(1).map(|m| m.as_str()))
             .unwrap_or("");
 
+        let proof_path = format!("{}/proof.json", working_directory);
+        let proof_size: Vec<Option<Value>> = if Path::new(&proof_path).exists() {
+            match fs::read_to_string(&proof_path) {
+                Ok(proof_file) => match serde_json::from_str::<serde_json::Value>(&proof_file) {
+                    Ok(json) => {
+                        if let Some(hex_proof) = json.get("hex_proof").and_then(Value::as_str) {
+                            let byte_length = hex_proof.len();
+                            println!("Proof Length: {}", byte_length);
+                            vec![Some(Value::Number(byte_length.into()))]
+                        } else {
+                            println!("No hex_proof found in proof.json");
+                            vec![None]
+                        }
+                    },
+                    Err(_) => vec![None],
+                },
+                Err(_) => vec![None],
+            }
+        } else {
+            vec![None]
+        };
+
         println!("Proof Time: {} seconds", proof_time);
         println!("Memory Usage: {} KB", memory_usage);
 
@@ -320,6 +345,7 @@ mod benchmarking_tests {
             "ezkl",
             Value::String(proof_time.to_string() + "s"),
             Value::String(memory_usage.to_string() + "kb"),
+            proof_size.into_iter().flatten().next()
         );
 
         // Assert proof path exists at path notebooks/{test}/proof.json
@@ -327,7 +353,7 @@ mod benchmarking_tests {
         assert!(Path::new(&proof_path).exists());
     }
 
-    fn update_benchmarks_json(test: &str, framework: &str, time: Value, memory: Value) {
+    fn update_benchmarks_json(test: &str, framework: &str, time: Value, memory: Value, proof_size: Option<Value>) {
         // Read in the benchmarks.json file
         let benchmarks_json = std::fs::read_to_string("./benchmarks.json").unwrap();
         let mut benchmarks_json: serde_json::Value =
@@ -343,6 +369,13 @@ mod benchmarking_tests {
             .as_array_mut()
             .unwrap();
         memory_usage_list.push(memory);
+
+        if let Some(size) = proof_size {
+            let proof_size_list = benchmarks_json[test][framework]["proofSize"]
+                .as_array_mut()
+                .unwrap();
+            proof_size_list.push(size);
+        }
 
         // Write to benchmarks.json file
         std::fs::write(

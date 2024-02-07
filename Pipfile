@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+skl2onnx = "*"
+starknet-py = "*"
+matplotlib = "*"
+sk2torch = "*"
+pandas = "*"
+jupyter = "*"
+torch = "*"
+hummingbird-ml = "*"
+onnx = "*"
+ezkl = "==7.1.4"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
