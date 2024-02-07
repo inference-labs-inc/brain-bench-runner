@@ -14,7 +14,7 @@ env:
 
 jobs:
   benchmark-tests:
-    runs-on: runner
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - uses: software-mansion/setup-scarb@v1
