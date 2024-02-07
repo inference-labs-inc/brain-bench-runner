@@ -14,7 +14,7 @@ env:
 
 jobs:
   benchmark-tests:
-    runs-on: 1000gb
+    runs-on: runner
     steps:
       - uses: actions/checkout@v4
       - uses: software-mansion/setup-scarb@v1
