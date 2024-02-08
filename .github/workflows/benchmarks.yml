@@ -53,7 +53,7 @@ jobs:
       - name: Download and Install EZKL Binary
         run: |
           curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
-          ezkl --version
+          source /root/.bashrc && ezkl --version
       - name: Setup Virtual Env
         run: python -m venv .env; source .env/bin/activate;
       - name: Run linear regression benchmarks across all frameworks
