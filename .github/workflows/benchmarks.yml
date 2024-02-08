@@ -59,7 +59,7 @@ jobs:
         run: python -m venv .env; source .env/bin/activate;
       - name: Run linear regression benchmarks across all frameworks
         run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
-      - name: Run randsom forest benchmarks across all frameworks
+      - name: Run random forest benchmarks across all frameworks
         run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_1 --test-threads 1
       - name: Run svm classification benchmarks across all frameworks
         run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_2 --test-threads 1
