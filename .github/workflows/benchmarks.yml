@@ -48,15 +48,16 @@ jobs:
       - name: Install GNU Time
         run: sudo apt-get update && sudo apt-get install -y time
       - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+        run: sudo apt-get install -y jq
+      - name: Install OpenSSL
+        run: sudo apt-get install -y openssl
       - name: Build ZKML
         run: cargo build --release
         working-directory: ./src/zkml
       - name: Download and Install EZKL Binary
         run: |
-          curl -L -o ezkl.tar.gz https://github.com/zkonduit/ezkl/releases/download/v7.1.4/build-artifacts.ezkl-linux-gnu.tar.gz
-          tar -xzf ezkl.tar.gz
-          sudo mv ezkl /usr/local/bin/  # Move the binary to a directory in your PATH
+          curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
+          ezkl --version
       - name: Setup Virtual Env
         run: python -m venv .env; source .env/bin/activate;
       - name: Run linear regression benchmarks across all frameworks
