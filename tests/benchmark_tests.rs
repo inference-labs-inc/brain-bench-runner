@@ -36,34 +36,34 @@ mod benchmarking_tests {
             // // source .env/bin/activate
             // // pip install -r requirements.txt
             // // maturin develop --release --features python-bindings
-            // let python_interpreter = ".env/bin/python";
+            let python_interpreter = ".env/bin/python";
 
-            // // now install torch, pandas, numpy, seaborn, jupyter
-            // let status = Command::new(python_interpreter)
-            //     .args([
-            //         "-m",
-            //         "pip",
-            //         "install",
-            //         "ezkl==7.1.4",
-            //         "onnx==1.14.0",
-            //         "hummingbird-ml==0.4.9",
-            //         "torch==2.0.1",
-            //         "jupyter==1.0.0",
-            //         "pandas==2.0.3",
-            //         "sk2torch==1.2.0",
-            //         "matplotlib==3.4.3",
-            //         "starknet-py==0.18.3",
-            //         "skl2onnx==1.16.0",
-            //     ])
-            //     .status()
-            //     .expect("failed to execute process");
-            // assert!(status.success());
-            // let status = Command::new("pip")
-            //     .args(["install", "numpy==1.23"])
-            //     .status()
-            //     .expect("failed to execute process");
+            // now install torch, pandas, numpy, seaborn, jupyter
+            let status = Command::new(python_interpreter)
+                .args([
+                    "-m",
+                    "pip",
+                    "install",
+                    "ezkl==7.1.4",
+                    "onnx==1.14.0",
+                    "hummingbird-ml==0.4.9",
+                    "torch==2.0.1",
+                    "jupyter==1.0.0",
+                    "pandas==2.0.3",
+                    "sk2torch==1.2.0",
+                    "matplotlib==3.4.3",
+                    "starknet-py==0.18.3",
+                    "skl2onnx==1.16.0",
+                ])
+                .status()
+                .expect("failed to execute process");
+            assert!(status.success());
+            let status = Command::new("pip")
+                .args(["install", "numpy==1.23"])
+                .status()
+                .expect("failed to execute process");
 
-            // assert!(status.success());
+            assert!(status.success());
         });
     }
 
