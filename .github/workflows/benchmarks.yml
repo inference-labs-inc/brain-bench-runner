@@ -45,12 +45,8 @@ jobs:
         run: |
           cargo install evcxr_jupyter
           evcxr_jupyter --install
-      - name: Install GNU Time
-        run: sudo apt-get update && sudo apt-get install -y time
-      - name: Install jq
-        run: sudo apt-get install -y jq
-      - name: Install OpenSSL
-        run: sudo apt-get install -y openssl
+      - name: Install GNU Time, Jq, and OpenSSL
+        run: sudo apt-get install -y openssl-dev libssl-dev jq time
       - name: Build ZKML
         run: cargo build --release
         working-directory: ./src/zkml
