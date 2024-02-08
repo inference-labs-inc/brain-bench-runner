@@ -9,61 +9,41 @@ on:
     paths-ignore:
       - "README.md"
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  benchmark-tests:
-    runs-on: self-hosted
+  benchmark-16CPU-32GB:
+    runs-on: [self-hosted, 16CPU, 32GB]
     steps:
-      - uses: actions/checkout@v4
-      - uses: software-mansion/setup-scarb@v1
+      - uses: actions/checkout@v2
+      - name: Run Benchmarks on 16CPU-32GB
+        uses: ./.github/actions/bench.yml
         with:
-          scarb-version: "2.4.2"
-      - uses: actions/setup-python@v4
+          cpu-label: "16CPU"
+          memory-label: "32GB"
+  benchmark-cuda:
+    runs-on: [self-hosted, CUDA]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run CUDA Benchmarks
+        uses: ./.github/actions/bench.yml
         with:
-          python-version: "3.9"
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2024-01-16
-          override: true
-          components: rustfmt, clippy
-      - uses: baptiste0928/cargo-install@v1
-        with:
-          crate: cargo-nextest
-          locked: true
-      - name: Cargo clean
-        run: cargo clean
-      - name: Delete Cargo.lock
-        run: rm -f Cargo.lock
-      - name: Install Risc0 toolchain
-        run: |
-          cargo install cargo-binstall
-          yes | cargo binstall cargo-risczero
-          cargo risczero install
-      - name: Install Rust jupyter kernel
-        run: |
-          cargo install evcxr_jupyter
-          evcxr_jupyter --install
-      - name: Install GNU Time, Jq, and OpenSSL
-        run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
-      - name: Build ZKML
-        run: cargo build --release
-        working-directory: ./src/zkml
-      - name: Download and Install EZKL Binary
-        run: |
-          curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
-          sudo mv /root/.ezkl/ezkl /usr/local/bin/
-          ezkl --version
-      - name: Setup Virtual Env
-        run: python -m venv .env; source .env/bin/activate;
-      - name: Run linear regression benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
-      - name: Run random forest benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_1 --test-threads 1
-      - name: Run svm classification benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_2 --test-threads 1
-      - name: Run tree ensemble regression benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_3 --test-threads 1
-      - name: Pretty Print benchmarks.json
-        run: jq '.' benchmarks.json # Pretty print the benchmarks.json file
+          cpu-label: "16CPU"
+          memory-label: "32GB"
+          cuda: "true"
+  # benchmark-32CPU-64GB:
+  #   runs-on: [self-hosted, 32CPU, 64GB]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run Benchmarks on 32CPU-64GB
+  #       uses: ./.github/actions/bench.yml
+  #       with:
+  #         cpu-label: "32CPU"
+  #         memory-label: "64GB"
+  # benchmark-64CPU-128GB:
+  #   runs-on: [self-hosted, 64CPU, 128GB]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run Benchmarks on 64CPU-128GB
+  #       uses: ./.github/actions/bench.yml
+  #       with:
+  #         cpu-label: "64CPU"
+  #         memory-label: "128GB"
