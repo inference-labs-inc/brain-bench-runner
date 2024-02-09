@@ -37,6 +37,8 @@ mod benchmarking_tests {
             // // pip install -r requirements.txt
             // // maturin develop --release --features python-bindings
             let python_interpreter = ".env/bin/python";
+            let enable_icicle_gpu = var("ENABLE_ICICLE_GPU").unwrap_or_else(|_| "false".to_string());
+            println!("ENABLE_ICICLE_GPU: {}", enable_icicle_gpu);
 
             // now install torch, pandas, numpy, seaborn, jupyter
             let status = Command::new(python_interpreter)
@@ -44,7 +46,7 @@ mod benchmarking_tests {
                     "-m",
                     "pip",
                     "install",
-                    "ezkl==7.1.4",
+                    if enable_icicle_gpu == "true" {"ezkl-gpu==8.0.1"} else {"ezkl==8.0.1"},
                     "onnx==1.14.0",
                     "hummingbird-ml==0.4.9",
                     "torch==2.0.1",
