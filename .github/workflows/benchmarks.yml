@@ -9,6 +9,9 @@ on:
     paths-ignore:
       - "README.md"
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   benchmark-16CPU-32GB:
     runs-on: [self-hosted, 16CPU, 32GB]
