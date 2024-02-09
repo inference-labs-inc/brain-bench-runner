@@ -19,6 +19,7 @@ jobs:
         with:
           cpu-label: "16CPU"
           memory-label: "32GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
   benchmark-cuda:
     runs-on: [self-hosted, CUDA]
     steps:
@@ -29,6 +30,7 @@ jobs:
           cpu-label: "16CPU"
           memory-label: "32GB"
           cuda: "true"
+          token: ${{ secrets.GITHUB_TOKEN }}
   # benchmark-32CPU-64GB:
   #   runs-on: [self-hosted, 32CPU, 64GB]
   #   steps:
