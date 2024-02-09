@@ -18,7 +18,7 @@ jobs:
         uses: ./.github/actions/bench
         with:
           cpu-label: "16CPU"
-          memory-label: "32GB"
+          mem-label: "32GB"
           token: ${{ secrets.GITHUB_TOKEN }}
   benchmark-cuda:
     runs-on: [self-hosted, CUDA]
@@ -28,7 +28,7 @@ jobs:
         uses: ./.github/actions/bench
         with:
           cpu-label: "16CPU"
-          memory-label: "32GB"
+          mem-label: "32GB"
           cuda: "true"
           token: ${{ secrets.GITHUB_TOKEN }}
   # benchmark-32CPU-64GB:
