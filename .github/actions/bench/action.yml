@@ -48,7 +48,7 @@ runs:
       shell: bash
       run: |
         cargo install cargo-binstall
-        yes | cargo binstall cargo-risczero
+        cargo binstall cargo-risczero --no-confirm
         cargo risczero install
     - name: Install Rust jupyter kernel
       shell: bash
