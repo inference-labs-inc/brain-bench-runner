@@ -14,16 +14,11 @@ declare -a exclude_patterns=("ezkl.nbconvert" "riscZero.nbconvert" "orion.nbconv
 
 # Check if jq is available, if not, try to get it from homebrew path
 if ! command -v jq &> /dev/null; then
-    if command -v brew &> /dev/null; then
-        brew_path=$(brew --prefix)
-        if [[ -x "$brew_path/bin/jq" ]]; then
-            alias jq="$brew_path/bin/jq"
-        else
-            echo "jq could not be found, please install jq to continue."
-            exit 1
-        fi
+    homebrew_jq="/opt/homebrew/bin/jq"
+    if [[ -x "$homebrew_jq" ]]; then
+        alias jq="$homebrew_jq"
     else
-        echo "jq could not be found and homebrew is not installed."
+        echo "jq could not be found, please install jq to continue."
         exit 1
     fi
 fi
