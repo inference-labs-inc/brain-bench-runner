@@ -12,6 +12,23 @@ json_object="{}"
 # Array of patterns to exclude
 declare -a exclude_patterns=("ezkl.nbconvert" "riscZero.nbconvert" "orion.nbconvert")
 
+# Check if jq is available, if not, try to get it from homebrew path
+if ! command -v jq &> /dev/null; then
+    if command -v brew &> /dev/null; then
+        brew_path=$(brew --prefix)
+        if [[ -x "$brew_path/bin/jq" ]]; then
+            alias jq="$brew_path/bin/jq"
+        else
+            echo "jq could not be found, please install jq to continue."
+            exit 1
+        fi
+    else
+        echo "jq could not be found and homebrew is not installed."
+        exit 1
+    fi
+fi
+
+
 # Iterate over subdirectories in the notebooks directory
 for subdir in "$notebooks_dir"/*; do
     if [[ -d "$subdir" ]]; then
