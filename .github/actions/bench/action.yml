@@ -40,7 +40,7 @@ runs:
       run: |
         python -m venv .env
         source .env/bin/activate
-        echo "ENABLE_ICICLE_GPU=${{ inputs.compute-type == "CUDA" }}" >> $GITHUB_ENV
+        echo "ENABLE_ICICLE_GPU=${{ inputs.compute-type == 'CUDA' }}" >> $GITHUB_ENV
     - name: Run Benchmarks
       shell: bash
       run: |
