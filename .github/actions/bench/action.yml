@@ -17,71 +17,70 @@ env:
 runs:
   using: composite
   steps:
-    steps:
-      - run: echo "Running on ${{ inputs.cpu-label }} - ${{ inputs.mem-label }} - ${{ inputs.cuda }}"
-        shell: bash
-      - uses: actions/checkout@v4
-      - uses: software-mansion/setup-scarb@v1
-        with:
-          scarb-version: "2.4.2"
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2024-01-16
-          override: true
-          components: rustfmt, clippy
-      - uses: baptiste0928/cargo-install@v1
-        with:
-          crate: cargo-nextest
-          locked: true
-      - name: Cargo clean
-        run: cargo clean
-      - name: Delete Cargo.lock
-        run: rm -f Cargo.lock
-      - name: Install Risc0 toolchain
-        run: |
-          cargo install cargo-binstall
-          yes | cargo binstall cargo-risczero
-          cargo risczero install
-      - name: Install Rust jupyter kernel
-        run: |
-          cargo install evcxr_jupyter
-          evcxr_jupyter --install
-      - name: Install GNU Time, Jq, and OpenSSL
-        run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
-      - name: Build ZKML
-        run: cargo build --release
-        working-directory: ./src/zkml
-      - name: Download and Install EZKL Binary
-        run: |
-          curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
-          sudo mv /root/.ezkl/ezkl /usr/local/bin/
-          ezkl --version
-      - name: Setup Virtual Env
-        run: python -m venv .env; source .env/bin/activate;
-      - name: Run linear regression benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
-      - name: Run random forest benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_1 --test-threads 1
-      - name: Run svm classification benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_2 --test-threads 1
-      - name: Run tree ensemble regression benchmarks across all frameworks
-        run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_3 --test-threads 1
-      - name: Pretty Print benchmarks.json
-        run: jq '.' benchmarks.json > '${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json'
-      - name: Commit ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json
-        run: |
-          git config --global user.email "actions@inferencelabs.com"
-          git config --global user.name "GitHub Actions"
-          git add "${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
-          # Only commit if there are changes
-          if git diff --staged --quiet; then
-            echo "No changes in ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
-          else
-            git commit -m "Update ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
-            git push
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo "Running on ${{ inputs.cpu-label }} - ${{ inputs.mem-label }} - ${{ inputs.cuda }}"
+      shell: bash
+    - uses: actions/checkout@v4
+    - uses: software-mansion/setup-scarb@v1
+      with:
+        scarb-version: "2.4.2"
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-2024-01-16
+        override: true
+        components: rustfmt, clippy
+    - uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-nextest
+        locked: true
+    - name: Cargo clean
+      run: cargo clean
+    - name: Delete Cargo.lock
+      run: rm -f Cargo.lock
+    - name: Install Risc0 toolchain
+      run: |
+        cargo install cargo-binstall
+        yes | cargo binstall cargo-risczero
+        cargo risczero install
+    - name: Install Rust jupyter kernel
+      run: |
+        cargo install evcxr_jupyter
+        evcxr_jupyter --install
+    - name: Install GNU Time, Jq, and OpenSSL
+      run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
+    - name: Build ZKML
+      run: cargo build --release
+      working-directory: ./src/zkml
+    - name: Download and Install EZKL Binary
+      run: |
+        curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
+        sudo mv /root/.ezkl/ezkl /usr/local/bin/
+        ezkl --version
+    - name: Setup Virtual Env
+      run: python -m venv .env; source .env/bin/activate;
+    - name: Run linear regression benchmarks across all frameworks
+      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
+    - name: Run random forest benchmarks across all frameworks
+      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_1 --test-threads 1
+    - name: Run svm classification benchmarks across all frameworks
+      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_2 --test-threads 1
+    - name: Run tree ensemble regression benchmarks across all frameworks
+      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_3 --test-threads 1
+    - name: Pretty Print benchmarks.json
+      run: jq '.' benchmarks.json > '${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json'
+    - name: Commit ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json
+      run: |
+        git config --global user.email "actions@inferencelabs.com"
+        git config --global user.name "GitHub Actions"
+        git add "${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
+        # Only commit if there are changes
+        if git diff --staged --quiet; then
+          echo "No changes in ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
+        else
+          git commit -m "Update ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
