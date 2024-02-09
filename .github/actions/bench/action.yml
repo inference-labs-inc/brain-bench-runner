@@ -56,7 +56,7 @@ runs:
         evcxr_jupyter --install
     - name: Install GNU Time, Jq, and OpenSSL
       shell: bash
-      if: ${{ inputs.cpu-label != "M1"}}
+      if: ${{ inputs.cpu-label != 'M1'}}
       run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
     - name: Build ZKML
       shell: bash
