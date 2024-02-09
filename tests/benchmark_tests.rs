@@ -53,7 +53,7 @@ mod benchmarking_tests {
                     "jupyter==1.0.0",
                     "pandas==2.0.3",
                     "sk2torch==1.2.0",
-                    "matplotlib==3.4.3",
+                    "matplotlib==3.8",
                     "starknet-py==0.18.3",
                     "skl2onnx==1.16.0",
                 ])
