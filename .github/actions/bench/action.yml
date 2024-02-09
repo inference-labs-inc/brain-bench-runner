@@ -9,6 +9,8 @@ inputs:
     required: true
   cuda:
     description: "Whether the runner uses CUDA for compute"
+    default: false
+    type: boolean
     required: false
   token:
     description: "GitHub runner token"
@@ -64,6 +66,7 @@ runs:
       run: |
         curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash
         sudo mv /root/.ezkl/ezkl /usr/local/bin/
+        export ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}
         ezkl --version
     - name: Setup Virtual Env
       shell: bash
