@@ -58,6 +58,9 @@ runs:
       shell: bash
       if: ${{ inputs.cpu-label != 'M1'}}
       run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
+    - name: Add brew to path if M1
+      if: ${{ inputs.cpu-label == 'M1' }}
+      run: echo "export PATH=/opt/homebrew/bin:$PATH" >> $GITHUB_ENV
     - name: Build ZKML
       shell: bash
       run: cargo build --release
@@ -67,7 +70,7 @@ runs:
       run: |
         curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash || true
         sudo mv ${XDG_CONFIG_HOME:-$HOME}/.ezkl/ezkl /usr/local/bin/ || true
-        export ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}
+        echo "export ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}" >> $GITHUB_ENV
         ezkl --version
     - name: Setup Virtual Env
       shell: bash
