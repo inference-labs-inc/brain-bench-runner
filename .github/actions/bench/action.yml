@@ -7,10 +7,9 @@ inputs:
   mem-label:
     description: "Amount of RAM the runner has"
     required: true
-  cuda:
-    description: "Whether the runner uses CUDA for compute"
-    default: false
-    type: boolean
+  compute-type:
+    description: "Type of compute used by the runner (CUDA/Metal/None)"
+    default: "None"
     required: false
   token:
     description: "GitHub runner token"
@@ -19,88 +18,61 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: echo "Running on ${{ inputs.cpu-label }} - ${{ inputs.mem-label }} - ${{ inputs.cuda }}"
+    - run: echo "Running on ${{ inputs.cpu-label }} - ${{ inputs.mem-label }} - ${{ inputs.compute-type }}"
       shell: bash
     - uses: actions/checkout@v4
-    - uses: software-mansion/setup-scarb@v1
-      with:
-        scarb-version: "2.4.2"
     - uses: actions/setup-python@v4
       with:
-        python-version: "3.10-dev"
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly-2024-01-16
-        override: true
-        components: rustfmt, clippy
-    - uses: baptiste0928/cargo-install@v1
-      with:
-        crate: cargo-nextest
-        locked: true
-    - name: Cargo clean
-      shell: bash
-      run: cargo clean
-    - name: Delete Cargo.lock
-      shell: bash
-      run: rm -f Cargo.lock
-    - name: Install Risc0 toolchain
+        python-version: "3.10"
+    - name: Install Dependencies
       shell: bash
       run: |
-        cargo install cargo-binstall
-        cargo binstall cargo-risczero --no-confirm
-        cargo risczero install
-    - name: Install Rust jupyter kernel
+        if [ "${{ inputs.cpu-label }}" == "M1" ]; then
+          mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
+          eval "$(homebrew/bin/brew shellenv)"
+          brew install openssl jq gnu-time
+          echo "PATH=\"homebrew/bin:$PATH\"" >> $GITHUB_ENV
+        else
+          sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
+        fi
+    - name: Setup Environment
       shell: bash
       run: |
-        cargo install evcxr_jupyter
-        evcxr_jupyter --install
-    - name: Install GNU Time, Jq, and OpenSSL
-      shell: bash
-      if: ${{ inputs.cpu-label != 'M1'}}
-      run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
-    - name: Build ZKML
-      shell: bash
-      run: cargo build --release
-      working-directory: ./src/zkml
-    - name: Download and Install EZKL Binary
+        python -m venv .env
+        source .env/bin/activate
+        echo "ENABLE_ICICLE_GPU=${{ inputs.compute-type == "CUDA" }}" >> $GITHUB_ENV
+    - name: Run Benchmarks
       shell: bash
       run: |
-        curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash || true
-        sudo mv ${XDG_CONFIG_HOME:-$HOME}/.ezkl/ezkl /usr/local/bin/ || true
-        ezkl --version
-    - name: Setup Virtual Env
-      shell: bash
-      run: python -m venv .env; source .env/bin/activate;
-    - name: Export ENABLE_ICICLE_GPU
-      shell: bash
-      run: |
-        echo "ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}" >> $GITHUB_ENV
-    - name: Run linear regression benchmarks across all frameworks
-      shell: bash
-      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
-    - name: Run random forest benchmarks across all frameworks
-      shell: bash
-      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_1 --test-threads 1
-    - name: Run svm classification benchmarks across all frameworks
-      shell: bash
-      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_2 --test-threads 1
-    - name: Run tree ensemble regression benchmarks across all frameworks
-      shell: bash
-      run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_3 --test-threads 1
-    - name: Pretty Print benchmarks.json
-      shell: bash
-      run: jq '.' benchmarks.json > '${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json'
-    - name: Commit ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json
+        source .env/bin/activate
+        case "${{ inputs.compute-type }}" in
+          CUDA)
+            feature="cuda"
+            ;;
+          Metal)
+            feature="metal"
+            ;;
+          *)
+            feature=""
+            ;;
+        esac
+        if [ -n "$feature" ]; then
+          cargo nextest run --features $feature benchmarking_tests::tests --test-threads 1
+        else
+          cargo nextest run benchmarking_tests::tests --test-threads 1
+        fi
+    - name: Process Results
       shell: bash
       run: |
+        jq '.' benchmarks.json > "benches/${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.compute-type }}.json"
         git config --global user.email "actions@inferencelabs.com"
         git config --global user.name "GitHub Actions"
-        git add "${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
-        # Only commit if there are changes
+        git pull
+        git add "benches/${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.compute-type }}.json"
         if git diff --staged --quiet; then
-          echo "No changes in ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
+          echo "No changes to commit."
         else
-          git commit -m "Update ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.cuda }}.json"
+          git commit -m "Update benchmarks for ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.compute-type }}"
           git push
         fi
       env:
