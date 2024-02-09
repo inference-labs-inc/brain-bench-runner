@@ -71,12 +71,9 @@ runs:
     - name: Setup Virtual Env
       shell: bash
       run: python -m venv .env; source .env/bin/activate;
-    - name: Check GPU Support
-      shell: bash
+    - name: Export ENABLE_ICICLE_GPU
       run: |
-        source .env/bin/activate
-        export ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}
-        echo $ENABLE_ICICLE_GPU
+        echo "ENABLE_ICICLE_GPU=${{ inputs.cuda == 'true' }}" >> $GITHUB_ENV
     - name: Run linear regression benchmarks across all frameworks
       shell: bash
       run: source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_benchmarks_::tests_0 --test-threads 1
