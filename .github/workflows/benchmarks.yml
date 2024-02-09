@@ -4,10 +4,12 @@ on:
     branches: ["main"]
     paths-ignore:
       - "README.md"
+      - "benches"
   pull_request:
     branches: ["main"]
     paths-ignore:
       - "README.md"
+      - "benches"
 
 env:
   CARGO_TERM_COLOR: always

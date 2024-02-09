@@ -35,6 +35,45 @@ runs:
         else
           sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
         fi
+    - uses: software-mansion/setup-scarb@v1
+      with:
+        scarb-version: "2.4.2"
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-2024-01-16
+        override: true
+        components: rustfmt, clippy
+    - uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-nextest
+        locked: true
+    - name: Cargo clean
+      shell: bash
+      run: cargo clean
+    - name: Delete Cargo.lock
+      shell: bash
+      run: rm -f Cargo.lock
+    - name: Install Risc0 toolchain
+      shell: bash
+      run: |
+        cargo install cargo-binstall
+        cargo binstall cargo-risczero --no-confirm
+        cargo risczero install
+    - name: Install Rust jupyter kernel
+      shell: bash
+      run: |
+        cargo install evcxr_jupyter
+        evcxr_jupyter --install
+    - name: Build ZKML
+      shell: bash
+      run: cargo build --release
+      working-directory: ./src/zkml
+    - name: Download and Install EZKL Binary
+      shell: bash
+      run: |
+        curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash || true
+        sudo mv ${XDG_CONFIG_HOME:-$HOME}/.ezkl/ezkl /usr/local/bin/ || true
+        ezkl --version
     - name: Setup Environment
       shell: bash
       run: |
