@@ -34,6 +34,16 @@ jobs:
           mem-label: "32GB"
           cuda: "true"
           token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-m1:
+    runs-on: [self-hosted, M1]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Benchmarks on M1
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "M1"
+          mem-label: "32GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
   # benchmark-32CPU-64GB:
   #   runs-on: [self-hosted, 32CPU, 64GB]
   #   steps:
