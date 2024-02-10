@@ -81,12 +81,18 @@ jobs:
           path: temp_repo
       - name: Aggregate Benchmarks and Commit
         run: |
-          jq -s 'reduce .[] as $item ({}; . + {($item | keys[0]): $item[.]})' benchmarks/*.json > temp_repo/fixtures/benchmarks.json
+          echo "{" > temp_repo/fixtures/benchmarks.json
+          for file in benchmarks/*.json; do
+            filename=$(basename "$file" .json)
+            echo "\"$filename\": $(cat "$file")," >> temp_repo/fixtures/benchmarks.json
+          done
+          echo "\"meta\": {\"lastUpdated\": \"$(date +"%Y-%m-%dT%H:%M:%S%z")\"}" >> temp_repo/fixtures/benchmarks.json
+          echo "}" >> temp_repo/fixtures/benchmarks.json
           cd temp_repo
           git config user.email "actions@inferencelabs.com"
           git config user.name "GitHub Actions"
           git add fixtures/benchmarks.json
-          git commit -m "Update aggregated benchmarks"
+          git commit -m "Update aggregated benchmarks with metadata"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
