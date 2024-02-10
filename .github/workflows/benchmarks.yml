@@ -48,6 +48,7 @@ jobs:
           mem-label: "32GB"
           token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
+    needs: [benchmark-16CPU-32GB, benchmark-cuda, benchmark-m1]
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -70,7 +71,6 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
-
   # benchmark-32CPU-64GB:
   #   runs-on: [self-hosted, 32CPU, 64GB]
   #   steps:
