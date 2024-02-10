@@ -55,7 +55,7 @@ jobs:
   #       uses: ./.github/actions/bench
   #       with:
   #         cpu-label: "32CPU"
-  #         memory-label: "64GB"
+  #         mem-label: "64GB"
   benchmark-64CPU-128GB:
     runs-on: [self-hosted, 64CPU, 128GB]
     steps:
@@ -64,7 +64,7 @@ jobs:
         uses: ./.github/actions/bench
         with:
           cpu-label: "64CPU"
-          memory-label: "128GB"
+          mem-label: "128GB"
           token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
     needs: [benchmark-64CPU-128GB]
