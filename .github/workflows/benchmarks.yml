@@ -47,6 +47,26 @@ jobs:
           compute-type: "Metal"
           mem-label: "32GB"
           token: ${{ secrets.GITHUB_TOKEN }}
+  commit-benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: benchmarks/
+      - name: Setup Git and Commit Benchmarks
+        run: |
+          git config --global user.email "actions@inferencelabs.com"
+          git config --global user.name "GitHub Actions"
+          git clone https://github.com/inference-labs-inc/chainBench.git temp_repo
+          cp -r benchmarks/* temp_repo/benches/
+          cd temp_repo
+          git add src/fixtures
+          git commit -m "Update benchmarks"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
+
   # benchmark-32CPU-64GB:
   #   runs-on: [self-hosted, 32CPU, 64GB]
   #   steps:
