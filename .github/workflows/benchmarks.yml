@@ -54,14 +54,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: benchmarks/
-      - name: Setup Git and Commit Benchmarks
+      - uses: actions/checkout@v2
+        with:
+          repository: inference-labs-inc/chainBench
+          token: ${{ secrets.ORG_TOKEN }}
+          path: temp_repo
+      - name: Copy Benchmarks and Commit
         run: |
-          git config --global user.email "actions@inferencelabs.com"
-          git config --global user.name "GitHub Actions"
-          git clone https://github.com/inference-labs-inc/chainBench.git temp_repo
           cp -r benchmarks/* temp_repo/benches/
           cd temp_repo
-          git add src/fixtures
+          git config user.email "actions@inferencelabs.com"
+          git config user.name "GitHub Actions"
+          git add benches/
           git commit -m "Update benchmarks"
           git push
         env:
