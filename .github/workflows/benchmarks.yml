@@ -79,14 +79,14 @@ jobs:
           repository: inference-labs-inc/chainBench
           token: ${{ secrets.ORG_TOKEN }}
           path: temp_repo
-      - name: Copy Benchmarks and Commit
+      - name: Aggregate Benchmarks and Commit
         run: |
-          cp -r benchmarks/* temp_repo/benches/
+          jq -s 'reduce .[] as $item ({}; . + {($item | keys[0]): $item[.]})' benchmarks/*.json > temp_repo/fixtures/benchmarks.json
           cd temp_repo
           git config user.email "actions@inferencelabs.com"
           git config user.name "GitHub Actions"
-          git add benches/
-          git commit -m "Update benchmarks"
+          git add fixtures/benchmarks.json
+          git commit -m "Update aggregated benchmarks"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
