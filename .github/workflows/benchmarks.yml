@@ -82,7 +82,7 @@ jobs:
       - name: Aggregate Benchmarks and Commit
         run: |
           echo "{" > temp_repo/src/fixtures/benchmarks.json
-          for file in *.json; do
+          for file in benchmarks/*.json; do
             filename=$(basename "$file" .json)
             echo "\"$filename\": $(cat "$file")," >> temp_repo/src/fixtures/benchmarks.json
           done
