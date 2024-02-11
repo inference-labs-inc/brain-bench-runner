@@ -56,18 +56,18 @@ jobs:
   #       with:
   #         cpu-label: "32CPU"
   #         mem-label: "64GB"
-  # benchmark-64CPU-128GB:
-  #   runs-on: [self-hosted, 64CPU, 128GB]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run Benchmarks on 64CPU-128GB
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "64CPU"
-  #         mem-label: "128GB"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-64CPU-128GB:
+    runs-on: [self-hosted, 64CPU, 128GB]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Benchmarks on 64CPU-128GB
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "64CPU"
+          mem-label: "128GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
-    # needs: [benchmark-64CPU-128GB]
+    needs: [benchmark-64CPU-128GB]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -75,11 +75,6 @@ jobs:
           repository: inference-labs-inc/chainBench
           token: ${{ secrets.ORG_TOKEN }}
           path: temp_repo
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: benchmarks
-          path: temp_repo/src/fixtures/benchmarks.json
       - name: Download Artifacts
         uses: actions/download-artifact@v4
       - name: Aggregate Benchmarks and Commit
@@ -109,13 +104,12 @@ jobs:
           fi
           echo "\"meta\": {\"lastUpdated\": \"$(date +"%Y-%m-%dT%H:%M:%S%z")\"}" >> temp_repo/src/fixtures/benchmarks.json
           echo "}" >> temp_repo/src/fixtures/benchmarks.json  # Close the JSON object
-          cat temp_repo/src/fixtures/benchmarks.json
+          jq '.' temp_repo/src/fixtures/benchmarks.json
           cd temp_repo
           git config user.email "actions@inferencelabs.com"
           git config user.name "GitHub Actions"
           git add src/fixtures/benchmarks.json
           git commit -m "Update aggregated benchmarks with metadata"
-
-          # git push
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
