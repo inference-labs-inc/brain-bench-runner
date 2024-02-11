@@ -111,11 +111,13 @@ jobs:
           fi
           echo "\"meta\": {\"lastUpdated\": \"$(date +"%Y-%m-%dT%H:%M:%S%z")\"}" >> temp_repo/src/fixtures/benchmarks.json
           echo "}" >> temp_repo/src/fixtures/benchmarks.json  # Close the JSON object
+          cat temp_repo/src/fixtures/benchmarks.json
           cd temp_repo
           git config user.email "actions@inferencelabs.com"
           git config user.name "GitHub Actions"
           git add src/fixtures/benchmarks.json
           git commit -m "Update aggregated benchmarks with metadata"
+
           # git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
