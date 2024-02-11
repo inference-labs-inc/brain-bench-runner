@@ -85,6 +85,8 @@ jobs:
           echo "{" > temp_repo/src/fixtures/benchmarks.json
           # Initialize a variable to handle comma placement
           first_entry=true
+          ls
+          ls benchmarks/
           for file in benchmarks/*.json; do
             if [ -s "$file" ]; then  # Check if file is not empty
               filename=$(basename "$file" .json)
