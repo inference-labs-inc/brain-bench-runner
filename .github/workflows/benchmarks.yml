@@ -78,11 +78,10 @@ jobs:
       - name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
+          name: benchmarks
           path: temp_repo/src/fixtures/benchmarks.json
       - name: Download Artifacts
         uses: actions/download-artifact@v4
-        with:
-          path: benchmarks/
       - name: Aggregate Benchmarks and Commit
         run: |
           # Start the JSON object
