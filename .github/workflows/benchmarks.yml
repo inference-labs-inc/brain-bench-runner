@@ -70,15 +70,20 @@ jobs:
     # needs: [benchmark-64CPU-128GB]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: benchmarks/
       - uses: actions/checkout@v2
         with:
           repository: inference-labs-inc/chainBench
           token: ${{ secrets.ORG_TOKEN }}
           path: temp_repo
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmarks
+          path: temp_repo/src/fixtures/benchmarks.json
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: benchmarks/
       - name: Aggregate Benchmarks and Commit
         run: |
           # Start the JSON object
