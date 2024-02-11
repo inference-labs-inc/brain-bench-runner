@@ -56,18 +56,18 @@ jobs:
   #       with:
   #         cpu-label: "32CPU"
   #         mem-label: "64GB"
-  benchmark-64CPU-128GB:
-    runs-on: [self-hosted, 64CPU, 128GB]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Benchmarks on 64CPU-128GB
-        uses: ./.github/actions/bench
-        with:
-          cpu-label: "64CPU"
-          mem-label: "128GB"
-          token: ${{ secrets.GITHUB_TOKEN }}
+  # benchmark-64CPU-128GB:
+  #   runs-on: [self-hosted, 64CPU, 128GB]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run Benchmarks on 64CPU-128GB
+  #       uses: ./.github/actions/bench
+  #       with:
+  #         cpu-label: "64CPU"
+  #         mem-label: "128GB"
+  #         token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
-    needs: [benchmark-64CPU-128GB]
+    # needs: [benchmark-64CPU-128GB]
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -81,13 +81,29 @@ jobs:
           path: temp_repo
       - name: Aggregate Benchmarks and Commit
         run: |
+          # Start the JSON object
           echo "{" > temp_repo/src/fixtures/benchmarks.json
+          # Initialize a variable to handle comma placement
+          first_entry=true
           for file in benchmarks/*.json; do
-            filename=$(basename "$file" .json)
-            echo "\"$filename\": $(cat "$file")," >> temp_repo/src/fixtures/benchmarks.json
+            if [ -s "$file" ]; then  # Check if file is not empty
+              filename=$(basename "$file" .json)
+              if [ "$first_entry" = true ]; then
+                first_entry=false
+              else
+                # Add a comma to separate entries if this isn't the first entry
+                echo "," >> temp_repo/src/fixtures/benchmarks.json
+              fi
+              # Append the file content as a JSON entry
+              echo "\"$filename\": $(cat $file)" >> temp_repo/src/fixtures/benchmarks.json
+            fi
           done
+          # Close the JSON entries and add the meta entry
+          if [ "$first_entry" = false ]; then
+            echo "," >> temp_repo/src/fixtures/benchmarks.json  # Add comma before meta if there were any entries
+          fi
           echo "\"meta\": {\"lastUpdated\": \"$(date +"%Y-%m-%dT%H:%M:%S%z")\"}" >> temp_repo/src/fixtures/benchmarks.json
-          echo "}" >> temp_repo/src/fixtures/benchmarks.json
+          echo "}" >> temp_repo/src/fixtures/benchmarks.json  # Close the JSON object
           cd temp_repo
           git config user.email "actions@inferencelabs.com"
           git config user.name "GitHub Actions"
