@@ -65,6 +65,7 @@ jobs:
         benchmark-m1,
         benchmark-64CPU-128GB,
       ]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
