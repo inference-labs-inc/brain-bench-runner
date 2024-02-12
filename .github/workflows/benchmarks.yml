@@ -15,16 +15,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  benchmark-16CPU-32GB:
-    runs-on: [self-hosted, 16CPU, 32GB]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Benchmarks on 16CPU-32GB
-        uses: ./.github/actions/bench
-        with:
-          cpu-label: "16CPU"
-          mem-label: "32GB"
-          token: ${{ secrets.GITHUB_TOKEN }}
+  # benchmark-16CPU-32GB:
+  #   runs-on: [self-hosted, 16CPU, 32GB]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run Benchmarks on 16CPU-32GB
+  #       uses: ./.github/actions/bench
+  #       with:
+  #         cpu-label: "16CPU"
+  #         mem-label: "32GB"
+  #         token: ${{ secrets.GITHUB_TOKEN }}
   benchmark-cuda:
     runs-on: [self-hosted, CUDA]
     steps:
@@ -58,13 +58,7 @@ jobs:
           mem-label: "128GB"
           token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
-    needs:
-      [
-        benchmark-16CPU-32GB,
-        benchmark-cuda,
-        benchmark-m1,
-        benchmark-64CPU-128GB,
-      ]
+    needs: [benchmark-cuda, benchmark-m1, benchmark-64CPU-128GB]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
