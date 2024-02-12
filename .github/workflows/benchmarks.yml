@@ -15,47 +15,38 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # benchmark-16CPU-32GB:
-  #   runs-on: [self-hosted, 16CPU, 32GB]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run Benchmarks on 16CPU-32GB
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "16CPU"
-  #         mem-label: "32GB"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-cuda:
-  #   runs-on: [self-hosted, CUDA]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run CUDA Benchmarks
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "16CPU"
-  #         mem-label: "32GB"
-  #         compute-type: "CUDA"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-m1:
-  #   runs-on: [self-hosted, M1]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run Benchmarks on M1
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "M1"
-  #         compute-type: "Metal"
-  #         mem-label: "32GB"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-32CPU-64GB:
-  #   runs-on: [self-hosted, 32CPU, 64GB]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run Benchmarks on 32CPU-64GB
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "32CPU"
-  #         mem-label: "64GB"
+  benchmark-16CPU-32GB:
+    runs-on: [self-hosted, 16CPU, 32GB]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Benchmarks on 16CPU-32GB
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "16CPU"
+          mem-label: "32GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-cuda:
+    runs-on: [self-hosted, CUDA]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run CUDA Benchmarks
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "16CPU"
+          mem-label: "32GB"
+          compute-type: "CUDA"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-m1:
+    runs-on: [self-hosted, M1]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Benchmarks on M1
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "M1"
+          compute-type: "Metal"
+          mem-label: "32GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
   benchmark-64CPU-128GB:
     runs-on: [self-hosted, 64CPU, 128GB]
     steps:
@@ -67,7 +58,13 @@ jobs:
           mem-label: "128GB"
           token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
-    needs: [benchmark-64CPU-128GB]
+    needs:
+      [
+        benchmark-16CPU-32GB,
+        benchmark-cuda,
+        benchmark-m1,
+        benchmark-64CPU-128GB,
+      ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
