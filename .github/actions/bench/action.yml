@@ -110,3 +110,4 @@ runs:
       with:
         name: benchmarks
         path: ${{ inputs.cpu-label }}-${{ inputs.mem-label }}-${{ inputs.compute-type }}.json
+        overwrite: true
