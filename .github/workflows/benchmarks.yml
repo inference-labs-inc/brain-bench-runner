@@ -70,7 +70,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: benchmarks
+          # path: benchmarks
           run-id: 7890522373
       - name: Aggregate Benchmarks and Commit
         run: |
