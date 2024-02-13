@@ -28,7 +28,7 @@ jobs:
   benchmark-cuda:
     runs-on: [self-hosted, CUDA]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run CUDA Benchmarks
         uses: ./.github/actions/bench
         with:
@@ -39,7 +39,7 @@ jobs:
   benchmark-m1:
     runs-on: [self-hosted, M1]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run Benchmarks on M1
         uses: ./.github/actions/bench
         with:
@@ -50,7 +50,7 @@ jobs:
   benchmark-64CPU-128GB:
     runs-on: [self-hosted, 64CPU, 128GB]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run Benchmarks on 64CPU-128GB
         uses: ./.github/actions/bench
         with:
@@ -62,7 +62,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: inference-labs-inc/chainBench
           token: ${{ secrets.ORG_TOKEN }}
