@@ -25,40 +25,40 @@ jobs:
   #         cpu-label: "16CPU"
   #         mem-label: "32GB"
   #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-cuda:
-  #   runs-on: [self-hosted, CUDA]
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Run CUDA Benchmarks
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "16CPU"
-  #         mem-label: "32GB"
-  #         compute-type: "CUDA"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-m1:
-  #   runs-on: [self-hosted, M1]
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Run Benchmarks on M1
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "10CPU"
-  #         compute-type: "Metal"
-  #         mem-label: "32GB"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  # benchmark-64CPU-128GB:
-  #   runs-on: [self-hosted, 64CPU, 128GB]
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Run Benchmarks on 64CPU-128GB
-  #       uses: ./.github/actions/bench
-  #       with:
-  #         cpu-label: "64CPU"
-  #         mem-label: "128GB"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-cuda:
+    runs-on: [self-hosted, CUDA]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run CUDA Benchmarks
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "16CPU"
+          mem-label: "32GB"
+          compute-type: "CUDA"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-m1:
+    runs-on: [self-hosted, M1]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Benchmarks on M1
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "10CPU"
+          compute-type: "Metal"
+          mem-label: "32GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  benchmark-64CPU-128GB:
+    runs-on: [self-hosted, 64CPU, 128GB]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Benchmarks on 64CPU-128GB
+        uses: ./.github/actions/bench
+        with:
+          cpu-label: "64CPU"
+          mem-label: "128GB"
+          token: ${{ secrets.GITHUB_TOKEN }}
   commit-benchmarks:
-    #needs: [benchmark-cuda, benchmark-m1, benchmark-64CPU-128GB]
+    needs: [benchmark-cuda, benchmark-m1, benchmark-64CPU-128GB]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
@@ -70,8 +70,8 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          # path: benchmarks
-          run-id: 7890522373
+          path: benchmarks
+          merge-multiple: true
       - name: Aggregate Benchmarks and Commit
         run: |
           # Start the JSON object
@@ -80,7 +80,7 @@ jobs:
           first_entry=true
           ls
           find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
-          for file in benchmarks/*/*.json; do
+          for file in benchmarks/*.json; do
             if [ -s "$file" ]; then  # Check if file is not empty
               filename=$(basename "$file" .json)
               if [ "$first_entry" = true ]; then
