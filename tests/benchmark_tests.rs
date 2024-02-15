@@ -207,6 +207,7 @@ mod benchmarking_tests {
         // Use regex to extract the Proving time and Memory usage
         let proving_time_re = Regex::new(r"Proving time: (\d+\.\d+)s").unwrap();
         let memory_usage_re = Regex::new(r"Maximum resident set size \(kbytes\): (\d+)").unwrap();
+        let proof_size_re = Regex::new(r"Proof size = (\d+)").unwrap();
 
         let proving_time_r0 = proving_time_re
             .captures(&stdout)
@@ -218,12 +219,17 @@ mod benchmarking_tests {
             .and_then(|caps| caps.get(1))
             .map_or("".to_string(), |m| m.as_str().to_string() + "kb");
 
+        let proof_size_r0 = proof_size_re
+            .captures(&stderr)
+            .and_then(|caps| caps.get(1))
+            .map_or("".to_string(), |m| (m.as_str().parse::<f64>().unwrap() / 1024.0).to_string() + "kb");
+
         update_benchmarks_json(
             test,
             "riscZero",
             Value::String(proving_time_r0),
             Value::String(memory_usage_r0),
-            None,
+            Option::Some(Value::String(proof_size_r0)),
         );
     }
 

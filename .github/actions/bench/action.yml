@@ -31,6 +31,8 @@ runs:
           eval "$(homebrew/bin/brew shellenv)"
           brew install openssl jq gnu-time
           echo "PATH=\"homebrew/bin:$PATH\"" >> $GITHUB_ENV
+        else if [ "${{ inputs.compute-type }}" == "CUDA" ]; then
+          echo "Skipping installation on CUDA"
         else
           sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
         fi
@@ -94,6 +96,7 @@ runs:
             feature=""
             ;;
         esac
+        export RUST_LOG=trace
         if [ -n "$feature" ]; then
           cargo nextest run --features $feature benchmarking_tests::tests --test-threads 1
         else
