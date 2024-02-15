@@ -72,7 +72,7 @@ runs:
       shell: bash
       run: |
         curl https://raw.githubusercontent.com/zkonduit/ezkl/main/install_ezkl_cli.sh | bash || true
-        sudo mv ${XDG_CONFIG_HOME:-$HOME}/.ezkl/ezkl /usr/local/bin/ || true
+        mv ${XDG_CONFIG_HOME:-$HOME}/.ezkl/ezkl /usr/local/bin/ || true
         ezkl --version
     - name: Setup Environment
       shell: bash
