@@ -1,12 +1,14 @@
-# ZKML-Framework-Comparisons
+# pyBenchZKML
 
-## Getting started
+Benchmarks for ZKML frameworks, as shown on the public [brainBench] site. Based on the initial work from zkonduit/zkml-framework-benchmarks, this repo extends benchmarked frameworks and adds new metrics to the benchmarks. This repo also includes a GitHub actions script to automate the benchmarking and aggregation process on a variety of machines.
+
+## Getting started (from zkonduit/zkml-framework-benchmarks)
 
 To run the benchmarks, you need to first install python (version 3.9.18 specifically), rust, rust jupyter kernel, risc0 toolchain, and scarb on your unix-like machine.
 
-First, you will need to install ezkl cli version 7.1.4 which you can do from [here](https://github.com/zkonduit/ezkl/releases/tag/v7.1.4) 
+First, you will need to install ezkl cli version 7.1.4 which you can do from [here](https://github.com/zkonduit/ezkl/releases/tag/v7.1.4)
 
-To install the other required dependencies run: 
+To install the other required dependencies run:
 
 ```bash
 bash install_dep_run.sh
@@ -40,7 +42,8 @@ source .env/bin/activate; cargo nextest run benchmarking_tests::tests::run_bench
 
 The data will stored in a `benchmarks.json` file in the root directory.
 
-If you run into any issues feel free to open a PR and we will try to help you out ASAP. 
+If you run into any issues feel free to open a PR and we will try to help you out ASAP.
 
 Enjoy! :)
 
+[brainBench]: https://brainbench.xyz/ "brainBench site"
