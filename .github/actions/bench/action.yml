@@ -29,7 +29,7 @@ runs:
         if [ "${{ inputs.compute-type }}" == "Metal" ]; then
           mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
           eval "$(homebrew/bin/brew shellenv)"
-          brew install openssl jq gnu-time
+          brew install jq gnu-time
           echo "PATH=\"homebrew/bin:$PATH\"" >> $GITHUB_ENV
         elif [ "${{ inputs.compute-type }}" == "CUDA" ]; then
           echo "Skipping installation on CUDA"
