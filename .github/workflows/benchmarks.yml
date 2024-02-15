@@ -105,6 +105,6 @@ jobs:
           git config user.name "GitHub Actions"
           git add src/fixtures/benchmarks.json
           git commit -m "Update aggregated benchmarks with metadata"
-          git push
+          # git push
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_TOKEN }}
