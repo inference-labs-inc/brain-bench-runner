@@ -96,11 +96,10 @@ runs:
             feature=""
             ;;
         esac
-        export RUST_LOG=trace
         if [ -n "$feature" ]; then
-          cargo nextest run --features $feature benchmarking_tests::tests --test-threads 1
+          RUST_LOG=trace cargo nextest run --features $feature benchmarking_tests::tests --test-threads 1
         else
-          cargo nextest run benchmarking_tests::tests --test-threads 1
+          RUST_LOG=trace cargo nextest run benchmarking_tests::tests --test-threads 1
         fi
     - name: Process Results
       shell: bash
