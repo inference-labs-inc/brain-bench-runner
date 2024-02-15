@@ -31,7 +31,7 @@ runs:
           eval "$(homebrew/bin/brew shellenv)"
           brew install openssl jq gnu-time
           echo "PATH=\"homebrew/bin:$PATH\"" >> $GITHUB_ENV
-        else if [ "${{ inputs.compute-type }}" == "CUDA" ]; then
+        elif [ "${{ inputs.compute-type }}" == "CUDA" ]; then
           echo "Skipping installation on CUDA"
         else
           sudo apt-get update && sudo apt-get install -y openssl libssl-dev jq time
