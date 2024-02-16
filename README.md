@@ -1,4 +1,4 @@
-# pyBenchZKML
+# brain-bench-runner
 
 Benchmarks for ZKML frameworks, as shown on the public [BrainBench] site. Based on the work from [zkonduit/zkml-framework-benchmarks], this repo extends benchmarked frameworks and adds new metrics to the benchmarks. This repo also includes a GitHub actions script to automate the benchmarking and aggregation process on a variety of machines.
 
