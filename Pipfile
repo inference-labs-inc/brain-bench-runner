@@ -14,7 +14,7 @@ jupyter = "*"
 torch = "*"
 hummingbird-ml = "*"
 onnx = "*"
-ezkl = "==7.1.4"
+ezkl = "==8.1.7"
 tensorflow-decision-forests = "*"
 onnxsim = "*"
 
