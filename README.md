@@ -2,6 +2,8 @@
 
 Benchmarks for ZKML frameworks, as shown on the public [BrainBench] site. Based on the work from [zkonduit/zkml-framework-benchmarks], this repo extends benchmarked frameworks and adds new metrics to the benchmarks. This repo also includes a GitHub actions script to automate the benchmarking and aggregation process on a variety of machines.
 
+You can find the frontend repo here at [brain-bench-fe]
+
 ## Getting started (from [zkonduit/zkml-framework-benchmarks])
 
 To run the benchmarks, you need to first install python (version 3.9.18 specifically), rust, rust jupyter kernel, risc0 toolchain, and scarb on your unix-like machine.
@@ -48,3 +50,4 @@ Enjoy! :)
 
 [BrainBench]: https://brainbench.xyz/ "BrainBench site"
 [zkonduit/zkml-framework-benchmarks]: https://github.com/zkonduit/zkml-framework-benchmarks "ZKML Framework Benchmarks Repo"
+[brain-bench-fe]: https://github.com/inference-labs-inc/brain-bench-fe
